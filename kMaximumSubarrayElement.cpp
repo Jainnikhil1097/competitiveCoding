@@ -1,4 +1,22 @@
-#include<bits/stdc++.h>
+//Owner - Nikhil Kumar Jain
+
+//Find the maximum element for every contiguous subarray of size k
+
+
+//Approach 1 - Simple O(n*k)
+//Approach 2 - Use a self balancing BST
+//			   O(n*logk)
+
+// In this Approach we will use deque or doubly ended linked list 
+// so that the maximum element will always be in front and we will add
+// in the back the element which have the possiblity of being the maximum 
+// element further.
+
+// The time complexity of this method is nearly O(n)
+
+#include<iostream>
+#include<deque>
+#include<vector>
 typedef long long        ll;
 #define pb               push_back
 #define mp               make_pair
@@ -14,43 +32,67 @@ typedef long long        ll;
 #define                  Demon ios_base::sync_with_stdio(0);cin.tie(NULL);cout.tie(NULL);
 const ll                 mod = 998244353;
 const double             pi = 3.141592653589793238463;
- 
-using namespace std;  
 
-
+using namespace std;
 
 void solve()
 {
-	int n;
-	cin>>n;
-	int a[n];
-	fr(i,0,n)
-		cin>>a[i];
+	int n, k; // n = size of array, k = size of subarray
+	cin >> n >> k;
+	vector<int> a(n); 
+	fr(i, 0, n)
+		cin >> a[i];
 	deque<int> q;
-	fr(i,0,k)
+	// done this for the first k elements
+	fr(i, 0, k)
 	{
-		if(a[i]>q.back())
+		if (q.empty())
 		{
-			while(a[i]>q.back()||q.empty())
-				q.pop_back()
+			q.pb(a[i]);
+			continue;
+		}
+		else if (!q.empty() && a[i] > q.back())
+		{
+			while (!q.empty() && a[i] > q.back())
+			{
+				q.pop_back();
+			}
 		}
 		q.pb(a[i]);
-	}	
-	cout<<q.front()<<" ";
-	fr(i,k,n)
-	{
-		if(a[i]==q.front())
-
 	}
+	if (!q.empty())
+		cout << q.front() << " ";
+	// for the next k to n-1 elements
+	fr(i, k, n)
+	{
+		if (q.empty())
+		{
+			q.pb(a[i]);
+			continue;
+		}
+		else if (a[i - k] == q.front())
+			q.pop_front();
+		else if (!q.empty() && a[i] > q.back())
+		{
+			while (!q.empty() && a[i] > q.back())
+			{
+				q.pop_back();
+			}
+		}
+		q.pb(a[i]);
+		cout << q.front() << " ";
+	}
+	cout << endl;
 }
 
 int main()
 {
-    Demon;
-    int t;
-    cin>>t;
-    while(t--)
-    {
-        solve();
-    }
+	Demon;
+	int t;   // total test cases
+	cin >> t;
+	while (t--)
+	{
+		solve();
+	}
+	return 0;
 }
